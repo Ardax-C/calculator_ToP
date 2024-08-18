@@ -24,13 +24,27 @@ const Calculator = {
     },
 
     createNumberButtons() {
-        for (let i = 9; i >= 0; i--) {
-            const button = document.createElement('button');
-            button.classList.add('number-card');
-            button.textContent = i;
-            button.dataset.value = i;
-            this.numbersContainer.appendChild(button);
-        }
+        const numbersContainer = document.querySelector('.numbers');
+        const buttonOrder = [
+            [7, 8, 9],
+            [4, 5, 6],
+            [1, 2, 3],
+            [0, '.']
+        ];
+
+        buttonOrder.forEach(row => {
+            const rowDiv = document.createElement('div');
+            rowDiv.classList.add('button-row');
+            row.forEach(value => {
+                const button = document.createElement('button');
+                button.classList.add('number-card');
+                button.id = `number-${value}`;
+                button.dataset.value = value;
+                button.textContent = value;
+                rowDiv.appendChild(button);
+            });
+            numbersContainer.appendChild(rowDiv);
+        });
     },
 
     createOperationButtons() {
@@ -65,7 +79,17 @@ const Calculator = {
             } else if (event.target.id === 'equal-btn') {
                 this.playSound(this.buttonSound);
                 this.calculateResult();
+            } else if (event.target.id === 'decimal-btn') {
+                this.playSound(this.buttonSound);
+                this.handleDecimalClick(event);
             }
+        }
+    },
+
+    handleDecimalClick(event) {
+        if (!this.currentInput.includes('.')) {
+            this.currentInput += event.target.dataset.value;
+            this.updateDisplay();
         }
     },
 

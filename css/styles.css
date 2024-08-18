@@ -161,6 +161,12 @@ section .numbers {
     margin-top: 20px;
 }
 
+.button-row {
+    display: flex;
+    justify-content: space-evenly;
+    width: 100%;
+}
+
 .number-card {
     display: flex;
     justify-content: center;
@@ -191,7 +197,7 @@ section .numbers {
 }
 
 #number-0 {
-    width: 62%;
+    width: 176px;
 }
 
 /* Footer Styles */
