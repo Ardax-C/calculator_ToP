@@ -73,8 +73,16 @@ equalBtn.addEventListener('click', () => {
     reset();
 });
 
+function toScientificNotation(number) {
+    return number.toExponential();
+}
+
 function reset() {
-    displayScreen.textContent = Number.isInteger(store.total) ? store.total.toString() : store.total.toFixed(2);
+    if (store.total > 999999 || store.total < -999999) {
+        displayScreen.textContent = toScientificNotation(store.total);
+    } else {
+        displayScreen.textContent = Number.isInteger(store.total) ? store.total.toString() : store.total.toFixed(2);
+    }
     numArr = [];
     store.numSeqOne = store.total.toString();
     store.numSeqTwo = null;
