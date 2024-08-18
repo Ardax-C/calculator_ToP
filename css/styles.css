@@ -225,3 +225,24 @@ footer a {
     text-decoration: none;
 }
 
+button:hover, .number-card:hover, .operation-card:hover {
+    background-color: #d3d3d3; /* Light gray background on hover */
+    cursor: pointer; /* Change cursor to pointer */
+    transition: background-color 0.3s ease; /* Smooth transition for background color */
+}
+
+@keyframes buttonPress {
+    0% {
+        transform: translateY(0);
+    }
+    50% {
+        transform: translateY(-5px);
+    }
+    100% {
+        transform: translateY(0);
+    }
+}
+
+button:active, .number-card:active, .operation-card:active {
+    animation: buttonPress 0.2s ease;
+}
