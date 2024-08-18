@@ -251,3 +251,4 @@ button:hover, .number-card:hover, .operation-card:hover {
 button:active, .number-card:active, .operation-card:active {
     animation: buttonPress 0.1s ease;
 }
+

@@ -14,6 +14,8 @@ const Calculator = {
     currentInput: '',
     previousInput: '',
     operator: null,
+    operationJustCompleted: false,
+    operationInProgress: false,
 
     init() {
         this.createNumberButtons();
@@ -47,7 +49,6 @@ const Calculator = {
         this.operationsContainer.addEventListener('click', this.handleButtonClick.bind(this));
         this.clearButton.addEventListener('click', this.handleButtonClick.bind(this));
         this.equalButton.addEventListener('click', this.handleButtonClick.bind(this));
-        this.trashSound.addEventListener('click', this.handleButtonClick().bind(this))
     },
 
     handleButtonClick(event) {
@@ -74,7 +75,16 @@ const Calculator = {
     },
 
     handleNumberClick(event) {
-        this.currentInput += event.target.dataset.value;
+        if (this.operationJustCompleted) {
+            this.currentInput = '';
+            this.operationJustCompleted = false;
+        }
+        if (this.operationInProgress) {
+            this.currentInput = event.target.dataset.value + ' ' + this.operator;
+            this.operationInProgress = false;
+        } else {
+            this.currentInput = this.currentInput.replace(this.operator, '').trim() + event.target.dataset.value + (this.operator ? ' ' + this.operator : '');
+        }
         this.updateDisplay();
     },
 
@@ -85,20 +95,24 @@ const Calculator = {
         }
         this.operator = event.target.dataset.value;
         this.previousInput = this.currentInput;
-        this.currentInput = '';
+        this.currentInput = this.currentInput.replace(this.operator, '').trim() + ' ' + this.operator;
+        this.operationInProgress = true;
+        this.updateDisplay();
     },
 
     clearDisplay() {
         this.currentInput = '';
         this.previousInput = '';
         this.operator = null;
+        this.operationJustCompleted = false;
+        this.operationInProgress = false;
         this.updateDisplay();
     },
 
     calculateResult() {
         if (this.previousInput === '' || this.currentInput === '' || this.operator === null) return;
         const prev = parseFloat(this.previousInput);
-        const current = parseFloat(this.currentInput);
+        const current = parseFloat(this.currentInput.split(' ').shift());
         let result;
         switch (this.operator) {
             case '+':
@@ -119,6 +133,7 @@ const Calculator = {
         this.currentInput = result.toString();
         this.operator = null;
         this.previousInput = '';
+        this.operationJustCompleted = true;
         this.updateDisplay();
     },
 
