@@ -1,4 +1,38 @@
 const numbers = document.querySelector('.numbers')
+const operations = document.querySelector('.operations')
+const displayScreen = document.querySelector('.display')
+let numArr = []
+let displayString = ""
+
+const opsSymbols = [
+    {
+        name: 'addition',
+        symbol: '+',
+    },
+    {
+        name: 'subtraction',
+        symbol: '-',
+    },
+    {
+        name: 'multiplication',
+        symbol: 'X',
+    },
+    {
+        name: 'division',
+        symbol: '/'
+    },
+]
+
+function createOps() {
+    for (let i = 0; i <= opsSymbols.length - 1; i++) {
+        const operationCard = document.createElement('div')
+
+        operationCard.textContent = opsSymbols[i].symbol
+        operationCard.classList.add('operation-card', 'fragment-mono-regular')
+        operationCard.id = `${opsSymbols[i].name}-op`
+        operations.appendChild(operationCard)
+    }
+}
 
 function createNumbers() {
     for (let i = 9; i >= 0; i--) {
@@ -18,3 +52,21 @@ function createNumbers() {
 }
 
 createNumbers()
+createOps()
+
+const numCard = document.querySelectorAll('.number-card')
+const deleteBtn = document.querySelector('#clear-btn')
+
+numCard.forEach(card => {
+    card.addEventListener('click', (e) => {
+        e.target.textContent === '.' ? numArr.push(e.target.textContent) : numArr.push(parseInt(e.target.textContent))
+        displayString = numArr.join('')
+        displayScreen.textContent = displayString
+
+    })
+})
+
+deleteBtn.addEventListener('click', e => {
+    numArr = []
+    displayScreen.textContent = '-'
+})
