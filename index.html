@@ -12,20 +12,15 @@
 		</header>
 
 		<section class="calculator">
-			<div class="display">
-				-
-			</div>
-
+			<div class="display">-</div>
 			<div class="nums-and-ops">
 				<div class="numbers"></div>
 				<div class="operations"></div>
 			</div>
-
 			<div class="functions">
 				<div class="clear-display">
 					<button id="clear-btn" type="submit">CLEAR</button>
 				</div>
-
 				<div class="equal">
 					<button type="submit" id="equal-btn">=</button>
 				</div>
@@ -37,8 +32,14 @@
 				<p class="footer-text">
 					<span>&copy; 2024 </span>
 					<a href="https://github.com/Ardax-C" target="_blank">Connor Alexander</a>
-					<span>All rights reserved.</span></p>
+					<span>All rights reserved.</span>
+				</p>
 			</div>
 		</footer>
+
+		<!-- Add audio elements -->
+		<audio id="button-sound" src="sounds/pop.mp3" preload="auto"></audio>
+		<audio id="operation-sound" src="sounds/smooth_beep.mp3" preload="auto"></audio>
+		<audio id="crumple-sound" src="sounds/crumple.mp3" preload="auto"></audio>
 	</body>
 </html>

@@ -1,127 +1,128 @@
-const numbers = document.querySelector('.numbers')
-const operations = document.querySelector('.operations')
-let displayScreen = document.querySelector('.display')
-let numArr = []
-let opArr = []
-let displayString = ""
-let store = {
-    numSeqOne: null,
-    numSeqTwo: null,
-    operation: null,
-    total: null,
-}
-
-const opsSymbols = [
-    { name: 'addition', symbol: '+' },
-    { name: 'subtraction', symbol: '-' },
-    { name: 'multiplication', symbol: 'X' },
-    { name: 'division', symbol: '/' }
-]
-
-function createOps() {
-    for (let i = 0; i < opsSymbols.length; i++) {
-        const operationCard = document.createElement('div');
-        operationCard.textContent = opsSymbols[i].symbol;
-        operationCard.classList.add('operation-card', 'fragment-mono-regular');
-        operationCard.id = `${opsSymbols[i].name}-op`;
-        operations.appendChild(operationCard);
-    }
-}
-
-function createNumbers() {
-    for (let i = 9; i >= 0; i--) {
-        const numberCard = document.createElement('div');
-        numberCard.textContent = i.toString();
-        numberCard.classList.add('number-card', 'fragment-mono-regular');
-        numberCard.id = `number-${i}`;
-        numbers.appendChild(numberCard);
-    }
-
-    // Add the decimal button
-    const decimalCard = document.createElement('div');
-    decimalCard.textContent = '.';
-    decimalCard.classList.add('number-card', 'fragment-mono-regular');
-    decimalCard.id = 'number-decimal';
-    numbers.appendChild(decimalCard);
-}
-
-createNumbers()
-createOps()
-
-const numCard = document.querySelectorAll('.number-card')
-const deleteBtn = document.querySelector('#clear-btn')
-const opsCard = document.querySelectorAll('.operation-card')
-const equalBtn = document.querySelector('#equal-btn')
-
-equalBtn.addEventListener('click', () => {
-    let op = store.operation;
-
-    switch (op) {
-        case '+':
-            store.total = parseFloat(store.numSeqOne) + parseFloat(store.numSeqTwo);
-            break;
-        case '-':
-            store.total = parseFloat(store.numSeqOne) - parseFloat(store.numSeqTwo);
-            break;
-        case 'X':
-            store.total = parseFloat(store.numSeqOne) * parseFloat(store.numSeqTwo);
-            break;
-        case '/':
-            store.total = parseFloat(store.numSeqOne) / parseFloat(store.numSeqTwo);
-            break;
-    }
-    reset();
+document.addEventListener('DOMContentLoaded', () => {
+    Calculator.init();
 });
 
-function toScientificNotation(number) {
-    return number.toExponential();
-}
+const Calculator = {
+    displayElement: document.querySelector('.display'),
+    numbersContainer: document.querySelector('.numbers'),
+    operationsContainer: document.querySelector('.operations'),
+    clearButton: document.getElementById('clear-btn'),
+    equalButton: document.getElementById('equal-btn'),
+    buttonSound: document.getElementById('button-sound'),
+    trashSound: document.getElementById('crumple-sound'),
+    operationSound: document.getElementById('operation-sound'),
+    currentInput: '',
+    previousInput: '',
+    operator: null,
 
-function reset() {
-    if (store.total > 999999 || store.total < -999999) {
-        displayScreen.textContent = toScientificNotation(store.total);
-    } else {
-        displayScreen.textContent = Number.isInteger(store.total) ? store.total.toString() : store.total.toFixed(2);
-    }
-    numArr = [];
-    store.numSeqOne = store.total.toString();
-    store.numSeqTwo = null;
-    store.operation = null;
-}
+    init() {
+        this.createNumberButtons();
+        this.createOperationButtons();
+        this.addEventListeners();
+    },
 
-numCard.forEach(card => {
-    card.addEventListener('click', (e) => {
-        numArr.push(e.target.textContent);
-        displayString = numArr.join('');
-        displayScreen.textContent = displayString;
-        if (store.operation === null) {
-            store.numSeqOne = displayScreen.textContent;
-        } else {
-            store.numSeqTwo = displayScreen.textContent;
+    createNumberButtons() {
+        for (let i = 9; i >= 0; i--) {
+            const button = document.createElement('button');
+            button.classList.add('number-card');
+            button.textContent = i;
+            button.dataset.value = i;
+            this.numbersContainer.appendChild(button);
         }
-        console.log(`1: ${store.numSeqOne}\n2: ${store.numSeqTwo}\nOp: ${store.operation}`);
-    });
-});
+    },
 
-opsCard.forEach(card => {
-    card.addEventListener('click', (e) => {
-        if (store.numSeqTwo !== null) {
-            equalBtn.click();
+    createOperationButtons() {
+        const operations = ['+', '-', '*', '/'];
+        operations.forEach(op => {
+            const button = document.createElement('button');
+            button.classList.add('operation-card');
+            button.textContent = op;
+            button.dataset.value = op;
+            this.operationsContainer.appendChild(button);
+        });
+    },
+
+    addEventListeners() {
+        this.numbersContainer.addEventListener('click', this.handleButtonClick.bind(this));
+        this.operationsContainer.addEventListener('click', this.handleButtonClick.bind(this));
+        this.clearButton.addEventListener('click', this.handleButtonClick.bind(this));
+        this.equalButton.addEventListener('click', this.handleButtonClick.bind(this));
+        this.trashSound.addEventListener('click', this.handleButtonClick().bind(this))
+    },
+
+    handleButtonClick(event) {
+        if (event.target.matches('button')) {
+            if (event.target.classList.contains('number-card')) {
+                this.playSound(this.buttonSound);
+                this.handleNumberClick(event);
+            } else if (event.target.classList.contains('operation-card')) {
+                this.playSound(this.operationSound);
+                this.handleOperationClick(event);
+            } else if (event.target.id === 'clear-btn') {
+                this.playSound(this.trashSound);
+                this.clearDisplay();
+            } else if (event.target.id === 'equal-btn') {
+                this.playSound(this.buttonSound);
+                this.calculateResult();
+            }
         }
-        opArr = e.target.textContent;
-        let op = opArr[0].toString();
-        store.operation = op;
-        let temp = numArr.join('');
-        displayScreen.textContent = `${temp} ${op}`;
-        numArr = [];
-    });
-});
+    },
 
-deleteBtn.addEventListener('click', () => {
-    numArr = [];
-    displayScreen.textContent = '-';
-    store.numSeqOne = null;
-    store.numSeqTwo = null;
-    store.operation = null;
-    store.total = null;
-});
+    playSound(sound) {
+        sound.currentTime = 0;
+        sound.play();
+    },
+
+    handleNumberClick(event) {
+        this.currentInput += event.target.dataset.value;
+        this.updateDisplay();
+    },
+
+    handleOperationClick(event) {
+        if (this.currentInput === '') return;
+        if (this.previousInput !== '') {
+            this.calculateResult();
+        }
+        this.operator = event.target.dataset.value;
+        this.previousInput = this.currentInput;
+        this.currentInput = '';
+    },
+
+    clearDisplay() {
+        this.currentInput = '';
+        this.previousInput = '';
+        this.operator = null;
+        this.updateDisplay();
+    },
+
+    calculateResult() {
+        if (this.previousInput === '' || this.currentInput === '' || this.operator === null) return;
+        const prev = parseFloat(this.previousInput);
+        const current = parseFloat(this.currentInput);
+        let result;
+        switch (this.operator) {
+            case '+':
+                result = prev + current;
+                break;
+            case '-':
+                result = prev - current;
+                break;
+            case '*':
+                result = prev * current;
+                break;
+            case '/':
+                result = prev / current;
+                break;
+            default:
+                return;
+        }
+        this.currentInput = result.toString();
+        this.operator = null;
+        this.previousInput = '';
+        this.updateDisplay();
+    },
+
+    updateDisplay() {
+        this.displayElement.textContent = this.currentInput || '-';
+    }
+};
