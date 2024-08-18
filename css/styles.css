@@ -68,11 +68,18 @@ section .display {
     font-size: 4rem;
 }
 
-section .clear-display {
+section .functions {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-evenly;
+    margin-bottom: 20px;
+}
+
+section .clear-display, section .equal {
     display: flex;
     justify-content: center;
     align-items: center;
-    width: 90%;
+    width: 45%;
     height: auto;
 }
 
@@ -92,6 +99,25 @@ section .clear-display button   {
     color: #69bbd7;
     cursor: pointer;
 }
+
+section .equal button {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 50px;
+    width: 90%;
+    padding: 10px;
+    background-color: #8fe79a;
+    box-shadow: 1px 1px 10px #1e6026;
+    border: none;
+    border-radius: 10px;
+    font-family: "Fragment Mono", monospace;
+    font-size: 3rem;
+    color: #0b4608;
+    cursor: pointer;
+}
+
+
 
 section .nums-and-ops {
     display: flex;
